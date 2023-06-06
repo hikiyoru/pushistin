@@ -1,0 +1,165 @@
+﻿@page "/admin/products/edit/{id:long}"
+@page "/admin/products/create"
+@inherits OwningComponentBase<IStoreRepository>
+@using Microsoft.JSInterop;
+@using pushistin.Core.Repositories;
+@inject IJSRuntime JS
+
+<style>
+    div.validation-message {
+        color: rgb(220, 53, 69);
+        font-weight: 500
+    }
+</style>
+
+<h3 class="bg-light border-bottom box-shadow text-center p-1">Добавление/Изменение товара</h3>
+<EditForm Model="Product" OnValidSubmit="SaveProduct">
+    <div class="row">
+        <div class="col">
+            <DataAnnotationsValidator />
+            @if (Product.ProductID != 0)
+            {
+                <div class="form-group">
+                    <label>ID</label>
+                    <input class="form-control" disabled value="@Product.ProductID" />
+                </div>
+            }
+            <div class="form-group">
+                <label>Название</label>
+                <ValidationMessage For="@(() => Product.Name)" />
+                <InputText class="form-control" @bind-Value="Product.Name" />
+            </div>
+            <div class="form-group">
+                <label>Бренд</label>
+                <ValidationMessage For="@(() => Product.Brand)" />
+                <InputText class="form-control" @bind-Value="Product.Brand" />
+            </div>
+            <div class="form-group">
+                <label>Описание</label>
+                <ValidationMessage For="@(() => Product.Description)" />
+                <InputText class="form-control" @bind-Value="Product.Description" />
+            </div>
+            <div class="form-group">
+                <label>Питомец</label>
+                <ValidationMessage For="@(() => Product.Pet)" />
+                <InputText class="form-control" @bind-Value="Product.Pet" />
+            </div>
+            <div class="form-group">
+                <label>Категория</label>
+                <ValidationMessage For="@(() => Product.Category)" />
+                <InputText class="form-control" @bind-Value="Product.Category" />
+            </div>
+            <div class="form-group">
+                <label>Вес</label>
+                <ValidationMessage For="@(() => Product.Weight)" />
+                <InputText class="form-control" @bind-Value="Product.Weight" />
+            </div>
+            <div class="form-group">
+                <label>Цена</label>
+                <ValidationMessage For="@(() => Product.Price)" />
+                <InputNumber class="form-control" @bind-Value="Product.Price" />
+            </div>
+            <!--<div class="form-group">
+                <label>Изображение</label>
+                <ValidationMessage For="@(() => Product.Image)" />
+                <InputText class="form-control" @bind-Value="Product.Image" />
+            </div-->
+            <div class="form-group">
+                <label>В наличии?</label>
+                <ValidationMessage For="@(() => Product.IsStock)" />
+                <InputCheckbox @bind-Value="Product.IsStock" />
+            </div>
+            <div class="form-group">
+                <InputFile @ref="inputImg" OnChange="@LoadImg" accept=".jpg,.jpeg,.png" class="form-contol" />
+                @if (isLoading)
+                {
+                    <p>Загрузка...</p>
+                }
+            </div>
+            <div class="mt-2">
+                @if (isLoading)
+                {
+                    <button type="submit" disabled class="site-btn  btn-sm">Сохранить</button>
+                    <NavLink class="site-btn  btn-sm" disabled href="/admin/products">Назад</NavLink>
+                }
+                else
+                {
+                    <button type="submit" class="site-btn  btn-sm">Сохранить</button>
+                    <NavLink class="site-btn  btn-sm" href="/admin/products">Назад</NavLink>
+                }
+
+
+            </div>
+        </div>
+        <div class="col">
+            @if (Product.ByteImage != null)
+            {
+                <img @ref="previewImageElem" style="width:350px;height:350px; object-fit:contain" src="data:image/*;base64,@(Convert.ToBase64String(Product.ByteImage))">
+            }
+            else
+            {
+                <img @ref="previewImageElem" style="width:350px;height:350px; object-fit:contain" src="">
+            }
+        </div>
+    </div>
+</EditForm>
+
+
+@code {
+
+    public IStoreRepository Repository => Service;
+
+    [Inject]
+    public NavigationManager? NavManager { get; set; }
+
+    [Parameter]
+    public long Id { get; set; } = 0;
+
+    public Product Product { get; set; } = new Product();
+
+    byte[]? img;
+    private InputFile? inputImg;
+    private long maxFileSize = 2048000;
+    private ElementReference previewImageElem;
+    private bool isLoading;
+
+    protected override void OnParametersSet()
+    {
+        if (Id != 0)
+        {
+            Product = Repository.Products.FirstOrDefault(p => p.ProductID == Id)
+                ?? new();
+        }
+    }
+
+    public void SaveProduct()
+    {
+        if (img != null)
+        {
+            Product.ByteImage = img;
+        }
+        if (Id == 0)
+        {
+            Repository.CreateProduct(Product);
+        }
+        else
+        {
+            Repository.SaveProduct(Product);
+        }
+        NavManager?.NavigateTo("/admin/products");
+    }
+    
+    private async Task LoadImg(InputFileChangeEventArgs e)
+    {
+        isLoading = true;
+        IBrowserFile imgFile = await e.File.RequestImageFileAsync(e.File.ContentType, 512, 512);
+        var buffers = new byte[imgFile.Size];
+        await imgFile.OpenReadStream(maxFileSize).ReadAsync(buffers);
+        img = buffers;
+        isLoading = false;
+        await JS.InvokeVoidAsync("previewImage", inputImg!.Element, previewImageElem);
+    }
+
+    public string ThemeColor => Id == 0 ? "primary" : "warning";
+    public string TitleText => Id == 0 ? "Create" : "Edit";
+}

@@ -1,0 +1,59 @@
+﻿@model Order
+@{
+    ViewData["Title"] = "Подтверждение заказа";
+}
+
+
+<!-- Checkout Section Begin -->
+<partial name="_StatusMessage" for="StatusMessage" />
+<section class="checkout spad">
+    <div class="container">
+        <div class="checkout__form">
+            <h4>Пожалуйста, введите свои данные</h4>
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <form asp-action="Checkout" method="post">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="checkout__input">
+                            <p>Имя<span>*</span></p><input asp-for="Name" />
+                        </div>
+                        <div class="checkout__input">
+                            <p>Телефон<span>*</span></p><input asp-for="Phone" />
+                        </div>
+                        <div class="checkout__input">
+                            <p>Город<span>*</span></p><input asp-for="City" />
+                        </div>
+                        <div class="checkout__input">
+                            <p>Улица<span>*</span></p><input asp-for="Street" />
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="checkout__input">
+                            <p>Дом<span>*</span></p><input asp-for="Home" />
+                        </div>
+                        <div class="checkout__input">
+                            <p>Подъезд</p><input asp-for="FrontDoor" />
+                        </div>
+                        <div class="checkout__input">
+                            <p>Квартира</p><input asp-for="Apartment" />
+                        </div>
+                        <div class="checkout__input">
+                            <p>Пожелания к заказу</p><input asp-for="OrderNotes" />
+                        </div>
+                    </div>
+                </div>
+                <div class="checkout__input">
+                    <p style="margin-bottom: -5px;">Способ оплаты<span>*</span></p>
+                    <select asp-for="PaymentWay" class="selectize wide">
+                        <option value="Наличными">Наличными</option>
+                        <option value="Картой при получении">Картой при получении</option>
+                        <option value="Картой онлайн">Картой онлайн</option>
+                    </select>
+                </div>
+                <div class="text-center mt-1">
+                    <input class="site-btn" type="submit" value="Подтвердить заказ" />
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

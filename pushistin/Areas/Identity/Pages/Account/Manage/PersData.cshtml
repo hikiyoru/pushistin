@@ -1,0 +1,51 @@
+﻿@page
+@model PersDataModel
+@{
+    ViewData["Title"] = "Профиль";
+    ViewData["ActivePage"] = ManageNavPages.PersData;
+}
+<partial name="_StatusMessage" for="StatusMessage" />
+<section class="checkout spad">
+    <div class="container">
+        <div class="checkout__form">
+            <form id="profile-form" method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="checkout__input">
+                            <p>Логин</p><input asp-for="Username" disabled />
+                        </div>
+                        <div class="checkout__input">
+                            <p>Имя</p><input asp-for="Input.Name" />
+                        </div>
+                        <div class="checkout__input">
+                            <p>Телефон</p><input asp-for="Input.Phone" />
+                        </div>
+                        <div class="checkout__input">
+                            <p>Город</p><input asp-for="Input.City" />
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="checkout__input">
+                            <p>Улица</p><input asp-for="Input.Street" />
+                        </div>
+                        <div class="checkout__input">
+                            <p>Дом</p><input asp-for="Input.Home" />
+                        </div>
+                        <div class="checkout__input">
+                            <p>Подъезд</p><input asp-for="Input.FrontDoor" />
+                        </div>
+                        <div class="checkout__input">
+                            <p>Квартира</p><input asp-for="Input.Apartment" />
+                        </div>
+                    </div>
+                </div>
+                <button id="update-profile-button" type="submit" class="w-100 site-btn btn-lg">Сохранить данные</button>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

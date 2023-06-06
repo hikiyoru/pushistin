@@ -1,0 +1,223 @@
+﻿@page
+@model CartModel
+@{
+    ViewData["Title"] = "Корзина";
+}
+
+<!-- Shoping Cart Section Begin -->
+
+
+    <section class="shoping-cart spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="shoping__cart__table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="shoping__product">Товары</th>
+                                <th>Название</th>
+                                <th>Цена</th>
+                                <th>Количество</th>
+                                <th>Всего</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @*<tr>
+                                <td class="shoping__cart__item">
+                                    <img src="img/cart/cart-1.jpg" alt="">
+                                    <h5>Vegetable’s Package</h5>
+                                </td>
+                                <td class="shoping__cart__price">
+                                    $55.00
+                                </td>
+                                <td class="shoping__cart__quantity">
+                                    <div class="quantity">
+                                        <div class="pro-qty">
+                                            <input type="text" value="1">
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="shoping__cart__total">
+                                    $110.00
+                                </td>
+                                <td class="shoping__cart__item__close">
+                                    <span class="icon_close"></span>
+                                </td>
+                            </tr>*@
+                            @foreach (var line in Model?.Cart?.Lines ?? Enumerable.Empty<CartLine>())
+                            {
+                                <tr>
+                                    <td class="shoping__cart__item">
+                                        @if (line.Product.ByteImage != null)
+                                        {
+                                            <img src="data:image/*;base64,@(Convert.ToBase64String(line.Product.ByteImage))" alt="">
+                                        }
+                                        else
+                                        {
+                                            <img src="img/unk.png" alt="">
+                                            
+                                        }
+
+                                    </td>
+                                    <td>
+                                        <h5>@line.Product.Name</h5>
+                                    </td>
+                                    <td class="shoping__cart__price">
+                                        @line.Product.Price.ToString("c")
+                                    </td>
+                                    <td class="shoping__cart__quantity">
+                                        <div class="quantity">
+                                            <div class="pro-qty">
+                                                <input type="text" value="@line.Quantity">
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="shoping__cart__total">
+                                        @((line.Product.Price * line.Quantity).ToString("c"))
+                                    </td>
+                                    <td class="shoping__cart__item__close">
+                                        <form asp-page-handler="Remove" method="post">
+                                            <input type="hidden" name="ProductID"
+                                                   value="@line.Product.ProductID" />
+                                            <input type="hidden" name="returnUrl"
+                                                   value="@Model?.ReturnUrl" />
+                                            <button type="submit" class="shoping__delete__button">
+                                                <span class="icon_close"></span>
+                                            </button>
+                                        </form>
+                                    </td>
+                                </tr>                
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="shoping__cart__btns">
+                    <a href="@Model?.ReturnUrl" class="primary-btn cart-btn">Вернуться назад</a>
+@*                    <a href="#" class="primary-btn cart-btn cart-btn-right">
+                        <span class="icon_loading"></span>
+                        Upadate Cart
+                    </a>*@
+                </div>
+            </div>
+            @if (Model?.Cart?.Lines.Count != 0)
+            {
+
+
+                <div class="col-lg-6">
+                    <div class="shoping__checkout">
+                        <h5>Итог</h5>
+                        <ul>
+                            <li>Промежуточный итог: <span>@Model?.Cart?.ComputeTotalValue()?.ToString("c")</span></li>
+                            @if (Model?.Cart?.ComputeTotalValue() > 40)
+                            {
+                                <li>Доставка: <span>0 Br</span></li>
+                                <li>Итог:<span>@Model?.Cart?.ComputeTotalValue()?.ToString("c")</span></li>
+                            }
+                            else
+                            {
+                                <li>Доставка: <span>10 Br</span></li>
+
+                                <li>Итог:<span>@(
+                                                             (Model?.Cart?.ComputeTotalValue() + 10m)?.ToString("c")
+                                                             )</span></li>
+                            }
+
+                        
+                    </ul>
+                    <a asp-action="Checkout" asp-controller="Order" class="primary-btn">Оформить заказ</a>
+                </div>
+                </div>
+            }
+            @*<div class="col-lg-6">
+                <div class="shoping__continue">
+                    <div class="shoping__discount">
+                        <h5>Discount Codes</h5>
+                        <form action="#">
+                            <input type="text" placeholder="Enter your coupon code">
+                            <button type="submit" class="site-btn">APPLY COUPON</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="shoping__checkout">
+                    <h5>Cart Total</h5>
+                    <ul>
+                        <li>Subtotal <span>$454.98</span></li>
+                        <li>Total <span>$454.98</span></li>
+                    </ul>
+                    <a href="#" class="primary-btn">PROCEED TO CHECKOUT</a>
+                </div>
+            </div>*@
+        </div>
+    </div>
+</section>
+
+
+@*<h2>Ваша корзина</h2>
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>Количество</th>
+            <th>Товар</th>
+            <th class="text-right">Цена</th>
+            <th class="text-right">Общая цена</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var line in Model?.Cart?.Lines ?? Enumerable.Empty<CartLine>()) {
+            <tr>
+                <td class="text-center">@line.Quantity</td>
+                <td class="text-left">@line.Product.Name</td>
+                @if(line.Product.DiscountPrice == null)
+                {
+                    <td class="text-right">@line.Product.Price.ToString("c")</td>
+                    <td class="text-right">
+                        @((line.Quantity * line.Product.Price).ToString("c"))
+                    </td>
+                }
+                else
+                {
+                    <td class="text-right">@line.Product.DiscountPrice?.ToString("c")</td>
+                    <td class="text-right">
+                        @((line.Quantity * line.Product.DiscountPrice)?.ToString("c"))
+                    </td>
+                }
+
+                <td class="text-center">
+                    <form asp-page-handler="Remove" method="post">
+                        <input type="hidden" name="ProductID"
+                               value="@line.Product.ProductID" />
+                        <input type="hidden" name="returnUrl"
+                               value="@Model?.ReturnUrl" />
+                        <button type="submit" class="btn btn-sm btn-outline-secondary">
+                            Удалить
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="3" class="text-right">Всего:</td>
+            <td class="text-right">
+                @Model?.Cart?.ComputeTotalValue()?.ToString("c")
+            </td>
+        </tr>
+    </tfoot>
+</table>
+
+<div class="text-center">
+    <a class="btn btn-outline-success" href="@Model?.ReturnUrl">Вернуться в магазин</a>
+    <a class="btn btn-outline-success" asp-action="Checkout" asp-controller="Order">
+        Перейти к оплате
+    </a>
+</div>*@

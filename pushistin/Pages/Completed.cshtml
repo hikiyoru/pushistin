@@ -1,0 +1,16 @@
+﻿@page
+@{
+    ViewData["Title"] = "Заказ оформлен";
+}
+<div class="text-center__custom">
+    <h2>Спасибо!</h2>
+    <p>Спасибо за размещение заказа #@OrderId</p>
+    <p>Мы свяжемся с вами и доставим ваш заказ как можно быстрее.</p>
+    <a class="site-btn" asp-controller="Store">Вернуться в магазин</a>
+</div>
+
+@functions {
+
+    [BindProperty(SupportsGet = true)]
+    public string? OrderId { get; set; }
+}

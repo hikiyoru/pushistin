@@ -1,0 +1,86 @@
+﻿@page "/admin/products"
+@page "/admin"
+@using pushistin.Core.Repositories;
+@inherits OwningComponentBase<IStoreRepository>
+
+<table class="table table-sm table-striped table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Название</th>
+            <th>Бренд</th>
+            <th>Питомец</th>
+            <th>Категория</th>
+            <th>Цена</th>
+            <th>В наличии?</th><td/>
+        </tr>
+    </thead>
+    <tbody>
+        @if (ProductData?.Count() > 0) {
+            @foreach (Product p in ProductData) {
+                <tr>
+                    <td>@p.ProductID</td>
+                    <td>@p.Name</td>
+                    <td>@p.Brand</td>
+                    <td>@p.Pet</td>
+                    <td>@p.Category</td>
+                    <td>@p.Price.ToString("c")</td>
+                    @if (@p.IsStock)
+                    {
+                        <td>Да</td>
+                    }
+                    else
+                    {
+                        <td>Нет</td>
+                    }
+                    <td>
+                        <div class="row m-1">
+                            <NavLink class="site-btn-adm btn-sm btn-block"
+                                     href="@GetDetailsUrl(p.ProductID)">
+                                Подробнее
+                            </NavLink>
+                            <NavLink class="site-btn-adm  btn-sm btn-block"
+                                     href="@GetEditUrl(p.ProductID)">
+                                Изменить
+                            </NavLink>
+                            <button class="site-btn-adm btn-sm btn-block"
+                                     @onclick="@(e => DeleteProduct(p))">
+                                Удалить
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            }
+        } else {
+            <tr>
+                <td colspan="5" class="text-center">Нет товаров</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<NavLink class="site-btn-adm  btn-sm btn-block" href="/admin/products/create">Создать</NavLink>
+
+@code {
+
+    public IStoreRepository Repository => Service;
+
+    public IEnumerable<Product> ProductData { get; set; } 
+        = Enumerable.Empty<Product>();
+
+    protected async override Task OnInitializedAsync() {
+        await UpdateData();
+    }
+
+    public async Task UpdateData() {
+        ProductData = await Repository.Products.ToListAsync();
+    }
+
+    public async Task DeleteProduct(Product p) {
+        Repository.DeleteProduct(p);
+        await UpdateData();
+    }
+
+    public string GetDetailsUrl(long id) => $"/admin/products/details/{id}";
+    public string GetEditUrl(long id) => $"/admin/products/edit/{id}";
+}

@@ -1,0 +1,143 @@
+﻿@page "/admin/orders"
+@inherits OwningComponentBase<IOrderRepository>
+@using pushistin.Core.Repositories;
+
+<table class="table table-hover table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Создан</th>
+            <th>Изменен</th>
+            <th>Метод оплаты</th>
+            <th>Оплачен</th>
+            <th></th>
+            <th>Стоимость</th>
+            <th>Статус</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (Order o in AllOrders)
+        {
+            <tr data-toggle="collapse" data-target="#accordion_@o.OrderID" class="clickable">
+                <td>@o.OrderID</td>
+                <td>@o.Created</td>
+                <td>@o.Updated</td>
+                <td>@o.PaymentWay</td>
+                @if (o.Paid == true)
+                {
+                    <td style="color: green;">Да</td>
+                }
+                @if (o.Paid == false)
+                {
+                    <td style="color: red;">Нет</td>
+                }
+                @if (o.Paid == null)
+                {
+                    <td></td>
+                }
+                <td></td>
+                <td>@o.Price</td>
+                <td>
+                    @o.Status
+                </td>
+
+            </tr>
+            <tr colspan="8">
+                <td style="font-weight:700;">
+                    <div id="accordion_@o.OrderID" class="collapse">Имя:</div>
+                    <div id="accordion_@o.OrderID" class="collapse">Телефон:</div>
+                    <div id="accordion_@o.OrderID" class="collapse">Город:</div>
+                    <div id="accordion_@o.OrderID" class="collapse">Улица:</div>
+                </td>
+                <td>
+                    <div id="accordion_@o.OrderID" class="collapse">@o.Name</div>
+                    <div id="accordion_@o.OrderID" class="collapse">@o.Phone</div>
+                    <div id="accordion_@o.OrderID" class="collapse">@o.City</div>
+                    <div id="accordion_@o.OrderID" class="collapse">@o.Street</div>
+                </td>
+                <td style="font-weight:700;">
+                    <div id="accordion_@o.OrderID" class="collapse">Дом:</div>
+                    <div id="accordion_@o.OrderID" class="collapse">Подъезд:</div>
+                    <div id="accordion_@o.OrderID" class="collapse">Квартира:</div>
+                    <div id="accordion_@o.OrderID" class="collapse">Пожелания:</div>
+                </td>
+                <td>
+                    <div id="accordion_@o.OrderID" class="collapse">@o.Home</div>
+                    <div id="accordion_@o.OrderID" class="collapse">@o.FrontDoor</div>
+                    <div id="accordion_@o.OrderID" class="collapse">@o.Apartment</div>
+                    <div id="accordion_@o.OrderID" class="collapse">@o.OrderNotes</div>
+                </td>
+                <td colspan="3">
+                    <div id="accordion_@o.OrderID" style="font-weight:700;" class="collapse">Товар:</div>
+                    
+                    @foreach (CartLine line in o.Lines)
+                    {
+                        <div id="accordion_@o.OrderID" class="collapse" style="border-top: 1px lightgray solid;">@line.Quantity шт. - @line.Product.Name</div>
+                    }
+                </td>
+               
+                <td>
+                    <div id="accordion_@o.OrderID" class="collapse">
+                        <div class="dropdown">
+                            <button class="site-btn btn-sm btn-block dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                Изменить
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                <button class="dropdown-item" @onclick="@(e => UpdateOrder(o.OrderID, "Отменен"))">
+                                    Заказ отменен
+                                </button>
+                                <button class="dropdown-item" @onclick="@(e => UpdateOrder(o.OrderID, "Обрабатывается"))">
+                                    Заказ обрабатывается
+                                </button>
+                                <button class="dropdown-item" @onclick="@(e => UpdateOrder(o.OrderID, "Ожидает оплаты"))">
+                                    Заказ ожидает оплаты
+                                </button>
+                                <button class="dropdown-item" @onclick="@(e => UpdateOrder(o.OrderID, "Ожидает отправки"))">
+                                    Заказ ожидает отправки
+                                </button>
+                                <button class="dropdown-item" @onclick="@(e => UpdateOrder(o.OrderID, "Отправлен"))">
+                                    Заказ отправлен
+                                </button>
+                                <button class="dropdown-item" @onclick="@(e => UpdateOrder(o.OrderID, "Доставлен"))">
+                                    Заказ доставлен
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<button class="site-btn  btn-sm btn-block" @onclick="@(e => UpdateData())">Обновить</button>
+
+@code {
+
+    public IOrderRepository Repository => Service;
+
+    public IEnumerable<Order> AllOrders { get; set; } = Enumerable.Empty<Order>();
+
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        await UpdateData();
+    }
+
+    public async Task UpdateData()
+    {
+        AllOrders = await Repository.Orders.ToListAsync();
+    }
+
+    private void UpdateOrder(int id, string statusValue)
+    {
+        Order? o = Repository.Orders.FirstOrDefault(o => o.OrderID == id);
+        if (o != null)
+        {
+            o.Status = statusValue;
+            o.Updated = DateTime.Now;
+            Repository.SaveOrder(o);
+        }
+    }
+}

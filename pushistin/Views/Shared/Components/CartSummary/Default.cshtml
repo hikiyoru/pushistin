@@ -1,0 +1,11 @@
+﻿@model Cart
+
+
+    <ul>
+@*      <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>*@
+        <li>
+            <a asp-page="/Cart"
+               asp-route-returnurl="@ViewContext.HttpContext.Request.PathAndQuery()"><i class="fa fa-shopping-bag"></i> <span>@Model?.Lines.Sum(x => x.Quantity)</span></a>
+        </li>
+    </ul>
+    <div class="header__cart__price">На сумму: <span>@Model?.ComputeTotalValue()?.ToString("c")</span></div>

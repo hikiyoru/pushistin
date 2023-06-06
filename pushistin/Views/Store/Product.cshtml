@@ -1,0 +1,71 @@
+﻿@using pushistin.Controllers
+
+@model Product
+@{
+    ViewData["Title"] = "Каталог";
+}
+
+<section class="product-details spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-6">
+                <div class="product__details__pic">
+                    <div class="product__details__pic__item">
+                        @if (ViewBag.ByteImage != null)
+                        {
+                            <img class="product__details__pic__item--large"
+                                 src="data:image/*;base64,@(Convert.ToBase64String(ViewBag.ByteImage))" alt="">
+                        }
+                        
+                        else
+                        {
+                        <img class="product__details__pic__item--large"
+                             src="~/img/unk.png" alt="">
+                        }
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 col-md-6">
+                <div class="product__details__text">
+                    <h3>@ViewBag.Name</h3>
+                    <div class="product__details__price">@ViewBag.Price.ToString("c")</div>
+                    <p>
+                        @ViewBag.Description
+                    </p> 
+                    <form id="@ViewBag.ProductID" asp-page="/Cart" method="post">
+                        <input type="hidden" asp-for="ProductID" />
+                        <input type="hidden" asp-for="Price" />
+                        <input type="hidden" name="returnUrl"
+                        value="@ViewContext.HttpContext.Request.PathAndQuery()" />
+                        @if (ViewBag.IsStock)
+                        {
+                            <button type="submit" class="site-btn">
+                                Добавить в корзину
+                            </button>
+                        }
+                        else
+                        {
+                            <button disabled type="submit" class="site-btn">
+                                Нет в наличии
+                            </button>
+                        }
+                    </form>
+                    <ul>
+                        @if (ViewBag.IsStock)
+                        {
+                            <li><b>В наличии:</b> <span>Да</span></li>
+                        }
+                        else
+                        {
+                            <li><b>В наличии:</b> <span>Нет</span></li>
+                        }
+                        <li><b>Бренд:</b> <span>@ViewBag.Brand</span></li>
+                        <li><b>Питомец:</b> <span>@ViewBag.Pet</span></li>
+                        <li><b>Категория:</b> <span>@ViewBag.Category</span></li>
+                        <li><b>Вес:</b> <span>@ViewBag.Weight</span></li>                      
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

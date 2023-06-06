@@ -1,0 +1,282 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using pushistin.Areas.Identity.Data
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Пушистин</title>
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
+
+    <!-- Css Styles -->
+    <link rel="stylesheet" href="~/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="~/css/font-awesome.min.css" type="text/css">
+    <link rel="stylesheet" href="~/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="~/css/nice-select2.css" type="text/css">
+    <link rel="stylesheet" href="~/css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="~/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="~/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="~/css/style.css" type="text/css">
+
+    
+</head>
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+    <!-- Humberger Begin -->
+    <div class="humberger__menu__overlay"></div>
+    <div class="humberger__menu__wrapper">
+        <div class="humberger__menu__logo">
+            <a asp-area="" asp-controller="Home" asp-action="Index"><img src="~/img/logo.png" alt=""></a>
+        </div>
+        <div class="humberger__menu__cart">
+            <vc:cart-summary />
+        </div>
+        <div class="humberger__menu__widget">
+            <partial name="_LoginPartial" />
+        </div>
+        <nav class="humberger__menu__nav mobile-menu">
+
+            <ul>
+                <li><a asp-area="" asp-controller="Home" asp-action="Index">Главная</a></li>
+                <li><a asp-area="" asp-controller="Store" asp-action="Index">Каталог</a></li>
+                <li><a asp-area="" asp-controller="AboutUs" asp-action="Index">О нас</a></li>
+                <li><a asp-area="" asp-controller="FAQ" asp-action="Index">FAQ</a></li>
+            </ul>
+        </nav>
+        <div id="mobile-menu-wrap"></div>                            
+        @if (Context.User.IsInRole("Administrator"))
+        {
+            <div class="header__top__right__social">
+                <a asp-area="" asp-controller="Admin" asp-action="Index" style="color: #ff5656">Администрирование</a>
+            </div>
+        }
+        <div class="header__top__right__social">
+            <a href="#"><i class="fa fa-instagram"></i></a>
+            <a href="#"><i class="fa fa-telegram"></i></a>
+        </div>
+        <div class="humberger__menu__contact">
+            <ul>
+                <li><i class="fa fa-envelope"></i> pushistin@gmail.com</li>
+                <li>Бесплатная доставка от 40 рублей!</li>
+            </ul>
+        </div>
+    </div>
+    <header class="header">
+        <div class="header__top">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6 col-md-6">
+                        <div class="header__top__left">
+                            <ul>
+                                <li><i class="fa fa-envelope"></i> pushistin@gmail.com</li>
+                                <li>Бесплатная доставка от 40 рублей!</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-md-6">
+                        <div class="header__top__right">
+                            @if (Context.User.IsInRole("Administrator"))
+                            {
+                                <div class="header__top__right__social">
+                                    <a asp-area="" asp-controller="Admin" asp-action="Index" style="color: #ff5656">Администрирование</a>
+                                </div>
+                            }
+                            <div class="header__top__right__social">
+                                <a href="#"><i class="fa fa-instagram"></i></a>
+                                <a href="#"><i class="fa fa-telegram"></i></a>
+                            </div>
+                            <partial name="_LoginPartial" />
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="header__logo">
+                        <a asp-area="" asp-controller="Home" asp-action="Index"><img src="~/img/logo.png" alt=""></a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <nav class="header__menu">
+                        <ul>
+                            <li><a asp-area="" asp-controller="Home" asp-action="Index">Главная</a></li>
+                            <li><a asp-area="" asp-controller="Store" asp-action="Index">Каталог</a></li>
+                            <li><a asp-area="" asp-controller="AboutUs" asp-action="Index">О нас</a></li>
+                            <li><a asp-area="" asp-controller="FAQ" asp-action="Index">FAQ</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-3">
+                    <div class="header__cart">
+                        <vc:cart-summary />
+                    </div>
+                </div>
+            </div>
+            <div class="humberger__open">
+                <i class="fa fa-bars"></i>
+            </div>
+        </div>
+    </header>
+    <!-- Header Section End -->
+    @if (ViewData["Title"] == "Главная" || ViewData["Title"] == "О нас")
+    {
+        <section class="breadcrumb-section set-bg-banner" data-setbg="img/breadcrumb.jpg" style="background-image: url(&quot;img/breadcrumb.jpg&quot;);">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12 text-center">
+                        <div class="breadcrumb__text">
+                            <h2>@*Пушистин*@</h2>
+                            <div class="breadcrumb__option">
+@*                                <a href="./index.html">Home</a>*@
+                                <span>@*У нас вы найдете самые лучшие товары по доступным ценам!*@</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    }
+    <div class="container-fluid mx-3 px-3">
+        <main role="main" class="container">
+            @RenderBody()
+        </main>
+    </div>
+    @if (ViewData["Title"] == "О нас")
+    {
+        <!-- Map Begin -->
+        <div class="map">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2432.8675672247837!2d31.000213877084626!3d52.42719724309573!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x46d469ad22d167b5%3A0x1806135ff90b8be2!2z0L_RgC3Rgi4g0JvQtdC90LjQvdCwIDIwLCDQk9C-0LzQtdC70Yw!5e0!3m2!1sru!2sby!4v1684694099462!5m2!1sru!2sby"
+                    height="500" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+            <div class="map-inside">
+                <i class="icon_pin"></i>
+                <div class="inside-widget">
+                    <h4>Гомель</h4>
+                    <ul>
+                        <li>Телефон: +375 (44) 123-23-23</li>
+                        <li>Адрес: г. Гомель, пр-т. Ленина 20</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <!-- Map End -->
+    }
+    <!-- Footer Section Begin -->
+    <footer class="footer spad">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="footer__about">
+                        <div class="footer__about__logo">
+                            <a href="./index.html"><img src="~/img/logo.png" alt=""></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-sm-6 offset-lg-1">
+                    <div class="footer__widget">
+                        <h6>Навигация</h6>
+                        <ul>
+                            <li><a href="#">Главная</a></li>
+                            <li><a href="#">Каталог</a></li>
+                            <li><a href="#">FAQ</a></li>
+                        </ul>
+                        <ul>
+                            <li><a href="#">О нас</a></li>
+                            <li><a href="#">Личный кабинет</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-12">
+                    <div class="footer__widget">
+                        <h6>Социальные сети</h6>
+                        <div class="footer__widget__social">
+                            <a href="#"><i class="fa fa-instagram"></i></a>
+                            <a href="#"><i class="fa fa-telegram"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="footer__copyright">
+                        <div class="footer__copyright__text">
+                            <p>
+                                &copy pushistin.by <script>document.write(new Date().getFullYear());</script> ООО «Пушистин», УНП 192636458 | г. Гомель, пр-т. Ленина 20 | Тел: +375 (44) 123-23-23 |
+                                Интернет-магазин зарегистрирован в торговом реестре 01.03.2023 г. | Регистрационный номер: 542125
+                            </p>
+                        </div>
+                        <div class="footer__copyright__payment"><img src="~/img/payment-item.png" alt=""></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- Js Plugins -->
+    <script src="~/js/jquery-3.3.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+  
+@*    <script src="js/jquery.nice-select.min.js"></script>*@
+    <script src="~/js/nice-select2.js"></script>
+    <script src="~/js/jquery-ui.min.js"></script>
+    <script src="~/js/jquery.slicknav.js"></script>
+    <script src="~/js/mixitup.min.js"></script>
+    <script src="~/js/owl.carousel.min.js"></script>
+    <script src="~/js/main.js"></script>
+
+    <script src="~/js/imgPrev.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function (e) {
+
+            // default
+            var els = document.querySelectorAll(".selectize");
+            els.forEach(function (select) {
+                NiceSelect.bind(select);
+            });
+
+            // seachable
+            var options = { searchable: true };
+            NiceSelect.bind(document.getElementById("seachable-select"), options);
+
+
+            //translated-select
+            var options = {
+                searchable: true,
+                placeholder: 'select',
+                searchtext: 'zoek',
+                selectedtext: 'geselecteerd'
+            };
+            document.getElementById("translated-select")._niceSelect = NiceSelect.bind(document.getElementById("translated-select"), options);
+        });
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.querySelector(".sidebar"); // получаем элемент с классом "sidebar"
+
+            // находим все элементы select, которые находятся внутри элемента "sidebar"
+            const selectElements = sidebar.querySelectorAll("select");
+
+            // проходимся по каждому элементу select
+            selectElements.forEach((selectElement) => {
+                // проходимся по всем его дочерним элементам и устанавливаем им атрибут value с таким же значением как и содержимое option
+                selectElement.querySelectorAll('option').forEach((option) => {
+                    option.setAttribute("value", option.textContent);
+                });
+            });
+        });
+    </script>
+
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

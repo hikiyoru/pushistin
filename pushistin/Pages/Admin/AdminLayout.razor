@@ -1,0 +1,23 @@
+﻿@inherits LayoutComponentBase
+
+<div class="container-fluid">
+    <div class="row-2">
+        <div class="gap-2 mb-3">
+            <NavLink class="site-btn"
+                        href="/admin/products"
+                     ActiveClass="site-btn-act"
+                 Match="NavLinkMatch.Prefix">
+                Товары
+            </NavLink>
+            <NavLink class="site-btn"
+                        href="/admin/orders"
+                     ActiveClass="site-btn-act"
+                 Match="NavLinkMatch.Prefix">
+                Заказы
+            </NavLink>            
+        </div>
+    </div>
+    <div class="col">
+        @Body
+    </div>
+</div>

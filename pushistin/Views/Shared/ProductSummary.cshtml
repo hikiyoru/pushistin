@@ -1,0 +1,65 @@
+﻿@model Product
+
+<div class="col-lg-4 col-md-6 col-sm-6">
+    <div class="product__item">
+        <form id="@Model?.ProductID" asp-page="/Cart" method="post">
+            <input type="hidden" asp-for="ProductID" />
+            <input type="hidden" asp-for="Price" />
+            <input type="hidden" name="returnUrl"
+                   value="@ViewContext.HttpContext.Request.PathAndQuery()" />
+            @if (Model?.ByteImage != null)
+            {
+                <div class="product__item__pic set-bg" data-setbg="data:image/*;base64,@(Convert.ToBase64String(Model.ByteImage))">
+                    <ul class="product__item__pic__hover">
+                  @*<li><a href="#"><i class="fa fa-heart"></i></a></li>
+                    <li><a href="#"><i class="fa fa-retweet"></i></a></li>
+                    <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>*@
+
+                        @if (Model.IsStock)
+                        {
+                            <button type="submit" class="site-btn">
+                                Добавить в корзину
+                            </button>
+                        }
+                        else
+                        {
+                            <button disabled type="submit" class="site-btn">
+                                Нет в наличии
+                            </button>
+                        }
+                    </ul>
+                </div>
+            }
+            else
+            {
+                <div class="product__item__pic set-bg" data-setbg="img/unk.png">
+                    <ul class="product__item__pic__hover">
+                  @*<li><a href="#"><i class="fa fa-heart"></i></a></li>
+                    <li><a href="#"><i class="fa fa-retweet"></i></a></li>
+                    <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>*@
+
+                        @if (Model.IsStock)
+                        {
+                            <button type="submit" class="site-btn">
+                                Добавить в корзину
+                            </button>
+                        }
+                        else
+                        {
+                            <button disabled type="submit" class="site-btn">
+                                Нет в наличии
+                            </button>
+                        }
+                    </ul>
+                </div>
+            }
+            
+                
+
+            <div class="product__item__text">
+                <h6><a asp-area="" asp-controller="Store" asp-action="Product" asp-route-id="@Model.ProductID" asp-route-returnurl="@Context.Request.QueryString">@Model?.Name</a></h6>
+                <h5>@Model?.Price.ToString("c")</h5>
+            </div>
+        </form>
+    </div>
+</div>
